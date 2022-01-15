@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SL Card Match</title>
+    <link rel="stylesheet" type="text/css" href="index.css"/>
+</head>
+<body>
+<div id="login">
+    <h1>SL Card Match</h1>
+    <div id="box">
+        <input type="text" placeholder="email" name="email"/>
+        <br>
+        <input type="password" placeholder="password" name="pwd"/>
+        <br>
+        <button class="btn" type="submit">Login</button>
+        &ensp;
+        <button class="btn" type="submit">Signup</button>
+    </div>
+    <script src="webjars/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        var btn = document.getElementsByClassName("btn");
+        btn[0].addEventListener("click", function () {
+            var email = $('#box').find(':text').eq(0).val();
+            var pwd = $('#box').find(':password').eq(0).val();
+            // document.cookie = 'email='+email;
+            if (email != '' && pwd != '') {
+                const data = {
+                    email: email,
+                    password: pwd
+                };
+                console.log(data);
+                fetch('http://192.168.31.78:8080/home', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                    //.then(response => response.json())
+                    //the return value is just a string
+                    .then(response => response.text())
+                    .then(url => {
+                        if(url == "index"){
+                            alert("User does not exist or password is incorrect");
+                        }else if (url == "home"){
+                            window.location.href="http://192.168.31.78:8080/" + url;
+                        }
+                        console.log('Success:', url);
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+            } else {
+                alert("Please enter information");
+            }
+        })
+    </script>
+
+    <script>
+        var btn = document.getElementsByClassName("btn");
+        btn[1].addEventListener("click", function (){
+            var email = $('#box').find(':text').eq(0).val();
+            var pwd = $('#box').find(':password').eq(0).val();
+            if (email != '' && pwd != '') {
+                const data = {
+                    email: email,
+                    password: pwd
+                };
+                console.log(data);
+                fetch('http://192.168.31.78:8080/api/user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                    //the return value is just a string
+                    .then(response => response.text())
+                    .then(body => {
+                        if(body == "no"){
+                            alert("Failure to create user, please try again");
+                        }else if (body == "ok"){
+                            alert("Create user successfully");
+                        }
+                        console.log('Success:', body);
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+            } else {
+                alert("Please enter information");
+            }
+        })
+    </script>
+</div>
+</body>
+</html>
